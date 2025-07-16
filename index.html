@@ -32,35 +32,32 @@
     <p>Você será redirecionado automaticamente assim que o servidor estiver online.</p>
   </div>
 
-  <script>const baseUrl = window.location.origin || "https://brechosylmara.onrender.com/";
-const appUrl = baseUrl + "https://aluno7.github.io/Afrodit/"; // ⬅️ Altere aqui se precisar
+  <script>
+    const appUrl = "https://brechosylmara.onrender.com/";
     let timeLeft = 60;
     const timerElement = document.getElementById("timer");
 
-    // Contador visual
     const countdown = setInterval(() => {
       timeLeft--;
-      timerElement.textContent = timeLeft;
+      if (timerElement) timerElement.textContent = timeLeft;
       if (timeLeft <= 0) {
         clearInterval(countdown);
-        window.location.href = appUrl; // redireciona forçadamente após 60s
+        clearInterval(checkServer);
+        window.location.href = appUrl;
       }
     }, 1000);
 
-    // Verificador de servidor ativo
     const checkServer = setInterval(() => {
       fetch(appUrl, { method: "HEAD", mode: "no-cors" })
         .then(() => {
-          // Se não deu erro, assume que o servidor acordou
           clearInterval(countdown);
           clearInterval(checkServer);
           window.location.href = appUrl;
         })
-        .catch(() => {
-          // Ignora erros (como 502 ou CORS) e tenta de novo em breve
-        });
-    }, 3000); // tenta a cada 3 segundos
+        .catch(() => {});
+    }, 3000);
   </script>
 
 </body>
 </html>
+
