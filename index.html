@@ -21,15 +21,28 @@
       color: #dc3545;
       font-weight: bold;
     }
+    #iframeContainer {
+      display: none;
+      height: 100vh;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
   </style>
 </head>
 <body>
 
-  <div class="container">
+  <div class="container" id="loadingScreen">
     <img src="dormirlon.gif" alt="Carregando..." class="gif" />
     <h3>Aguarde enquanto conectamos ao servidor e acordamos ele...</h3>
     <p class="countdown" id="timer">60</p>
     <p>Você será redirecionado automaticamente assim que o servidor estiver online.</p>
+  </div>
+
+  <div id="iframeContainer">
+    <iframe src="https://brechosylmara.onrender.com/"></iframe>
   </div>
 
   <script>
@@ -43,21 +56,25 @@
       if (timeLeft <= 0) {
         clearInterval(countdown);
         clearInterval(checkServer);
-        window.location.href = appUrl;
+        showIframe();
       }
     }, 1000);
 
     const checkServer = setInterval(() => {
-      fetch(appUrl, { method: "HEAD", mode: "no-cors" })
+      fetch(appUrl, { method: "GET", mode: "no-cors" }) // "no-cors" to avoid CORS error
         .then(() => {
           clearInterval(countdown);
           clearInterval(checkServer);
-          window.location.href = appUrl;
+          setTimeout(showIframe, 10000); // Espera 10 segundos extras
         })
         .catch(() => {});
     }, 3000);
+
+    function showIframe() {
+      document.getElementById("loadingScreen").style.display = "none";
+      document.getElementById("iframeContainer").style.display = "block";
+    }
   </script>
 
 </body>
 </html>
-
