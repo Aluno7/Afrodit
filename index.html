@@ -32,8 +32,8 @@
     <p>Você será redirecionado automaticamente assim que o servidor estiver online.</p>
   </div>
 
-  <script>
-    const appUrl = "https://brechosylmara.onrender.com/"; // ⬅️ Altere aqui se precisar
+  <script>const baseUrl = window.location.origin || "https://brechosylmara.onrender.com/";
+const appUrl = baseUrl + "/"; // ⬅️ Altere aqui se precisar
     let timeLeft = 60;
     const timerElement = document.getElementById("timer");
 
