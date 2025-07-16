@@ -21,15 +21,6 @@
       color: #dc3545;
       font-weight: bold;
     }
-    #iframeContainer {
-      display: none;
-      height: 100vh;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
   </style>
 </head>
 <body>
@@ -41,40 +32,42 @@
     <p>Você será redirecionado automaticamente assim que o servidor estiver online.</p>
   </div>
 
-  <div id="iframeContainer">
-    <iframe src="https://brechosylmara.onrender.com/"></iframe>
-  </div>
-
   <script>
     const appUrl = "https://brechosylmara.onrender.com/";
     let timeLeft = 60;
     const timerElement = document.getElementById("timer");
 
+    // Inicia contagem de 60s
     const countdown = setInterval(() => {
       timeLeft--;
       if (timerElement) timerElement.textContent = timeLeft;
       if (timeLeft <= 0) {
         clearInterval(countdown);
         clearInterval(checkServer);
-        showIframe();
+        // Redireciona mesmo sem resposta (último recurso)
+        window.location.href = appUrl;
       }
     }, 1000);
 
-    const checkServer = setInterval(() => {
-      fetch(appUrl, { method: "GET", mode: "no-cors" }) // "no-cors" to avoid CORS error
-        .then(() => {
-          clearInterval(countdown);
-          clearInterval(checkServer);
-          setTimeout(showIframe, 10000); // Espera 10 segundos extras
-        })
-        .catch(() => {});
-    }, 3000);
+    // Espera 5s após o carregamento da página antes de iniciar verificação
+    setTimeout(() => {
+      const checkServer = setInterval(() => {
+        fetch(appUrl, { method: "GET", mode: "no-cors" })
+          .then(() => {
+            clearInterval(countdown);
+            clearInterval(checkServer);
+            setTimeout(() => {
+              window.location.href = appUrl;
+            }, 10000); // 10s de segurança após a resposta
+          })
+          .catch(() => {
+            // Servidor ainda dormindo, tenta novamente em 3s
+          });
+      }, 3000);
+    }, 5000); // Delay de 5 segundos antes de iniciar verificação
 
-    function showIframe() {
-      document.getElementById("loadingScreen").style.display = "none";
-      document.getElementById("iframeContainer").style.display = "block";
-    }
   </script>
 
 </body>
 </html>
+
