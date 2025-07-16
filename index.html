@@ -37,37 +37,35 @@
     let timeLeft = 60;
     const timerElement = document.getElementById("timer");
 
-    // Inicia contagem de 60s
+    let checkServer;
+
+    // Inicia contagem de 60 segundos
     const countdown = setInterval(() => {
       timeLeft--;
       if (timerElement) timerElement.textContent = timeLeft;
       if (timeLeft <= 0) {
         clearInterval(countdown);
         clearInterval(checkServer);
-        // Redireciona mesmo sem resposta (último recurso)
         window.location.href = appUrl;
       }
     }, 1000);
 
-    // Espera 5s após o carregamento da página antes de iniciar verificação
+    // Espera 5 segundos antes de iniciar verificação do servidor
     setTimeout(() => {
-      const checkServer = setInterval(() => {
+      checkServer = setInterval(() => {
         fetch(appUrl, { method: "GET", mode: "no-cors" })
           .then(() => {
             clearInterval(countdown);
             clearInterval(checkServer);
-            setTimeout(() => {
-              window.location.href = appUrl;
-            }, 10000); // 10s de segurança após a resposta
+            window.location.href = appUrl; // redireciona imediatamente após resposta
           })
           .catch(() => {
-            // Servidor ainda dormindo, tenta novamente em 3s
+            // Ainda não respondeu, tenta de novo em 3s
           });
       }, 3000);
-    }, 5000); // Delay de 5 segundos antes de iniciar verificação
+    }, 5000); // Delay de 5 segundos antes da verificação começar
 
   </script>
 
 </body>
 </html>
-
